@@ -198,8 +198,8 @@ const IndividualProtocol = () => {
     },
     series: [
       {
-        name: "Conversion",
-        data: [],
+        name: "TVL",
+        data: [67000, 54000, 82000, 57000, 72000, 57000, 87000],
       },
     ],
     options: {
