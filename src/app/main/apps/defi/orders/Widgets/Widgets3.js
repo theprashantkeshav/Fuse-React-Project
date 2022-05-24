@@ -21,26 +21,6 @@ function Widgets3(props) {
           <Typography className="h3 font-semibold leading-none tracking-tighter">
             {data.description.value}
           </Typography>
-
-          <div className="flex flex-col mx-8">
-            {data.description.ofTarget > 0 && (
-              <Icon className="text-green text-20">trending_up</Icon>
-            )}
-            {data.description.ofTarget < 0 && (
-              <Icon className="text-red text-20">trending_down</Icon>
-            )}
-            <div className="flex items-center">
-              <Typography className="font-semibold" color="textSecondary">
-                {data.description.ofTarget}%
-              </Typography>
-              <Typography
-                className="whitespace-nowrap mx-4"
-                color="textSecondary"
-              >
-                of target
-              </Typography>
-            </div>
-          </div>
         </div>
       </div>
       <div className="h-96 w-100-p">

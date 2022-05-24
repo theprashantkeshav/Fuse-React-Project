@@ -6,7 +6,6 @@ const Products = lazy(() => import("./products/Products"));
 const Order = lazy(() => import("./order/Order"));
 const Orders = lazy(() => import("./orders/Orders"));
 const IndividualProtocol = lazy(() => import("./orders/IndividualProtocol"));
-const Widget1 = lazy(() => import("./orders/Widgets/Widgets1"));
 
 const DeFiAppConfig = {
   settings: {

@@ -1,43 +1,43 @@
-import FusePageSimple from '@fuse/core/FusePageSimple';
-import { styled } from '@mui/material/styles';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import withReducer from 'app/store/withReducer';
-import _ from '@lodash';
-import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Box from '@mui/material/Box';
-import ProjectDashboardAppHeader from './ProjectDashboardAppHeader';
-import ProjectDashboardAppSidebar from './ProjectDashboardAppSidebar';
-import reducer from './store';
-import { getWidgets, selectWidgets } from './store/widgetsSlice';
-import BudgetSummaryTab from './tabs/BudgetSummaryTab';
-import HomeTab from './tabs/HomeTab';
-import TeamMembersTab from './tabs/TeamMembersTab';
+import FusePageSimple from "@fuse/core/FusePageSimple";
+import { styled } from "@mui/material/styles";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import withReducer from "app/store/withReducer";
+import _ from "@lodash";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
+import ProjectDashboardAppHeader from "./ProjectDashboardAppHeader";
+import ProjectDashboardAppSidebar from "./ProjectDashboardAppSidebar";
+import reducer from "./store";
+import { getWidgets, selectWidgets } from "./store/widgetsSlice";
+import BudgetSummaryTab from "./tabs/BudgetSummaryTab";
+import HomeTab from "./tabs/HomeTab";
+import TeamMembersTab from "./tabs/TeamMembersTab";
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
-  '& .FusePageSimple-header': {
+  "& .FusePageSimple-header": {
     minHeight: 160,
     height: 160,
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up("lg")]: {
       marginRight: 12,
       borderBottomRightRadius: 20,
     },
   },
-  '& .FusePageSimple-toolbar': {
+  "& .FusePageSimple-toolbar": {
     minHeight: 56,
     height: 56,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
-  '& .FusePageSimple-rightSidebar': {
+  "& .FusePageSimple-rightSidebar": {
     width: 288,
     border: 0,
-    padding: '12px 0',
+    padding: "12px 0",
   },
-  '& .FusePageSimple-content': {
-    maxHeight: '100%',
-    '& canvas': {
-      maxHeight: '100%',
+  "& .FusePageSimple-content": {
+    maxHeight: "100%",
+    "& canvas": {
+      maxHeight: "100%",
     },
   },
 }));
@@ -48,6 +48,7 @@ function ProjectDashboardApp(props) {
 
   const pageLayout = useRef(null);
   const [tabValue, setTabValue] = useState(0);
+  console.log(tabValue);
 
   useEffect(() => {
     dispatch(getWidgets());
@@ -73,11 +74,13 @@ function ProjectDashboardApp(props) {
           variant="scrollable"
           scrollButtons={false}
           className="w-full px-24 -mx-4 min-h-40"
-          classes={{ indicator: 'flex justify-center bg-transparent w-full h-full' }}
+          classes={{
+            indicator: "flex justify-center bg-transparent w-full h-full",
+          }}
           TabIndicatorProps={{
             children: (
               <Box
-                sx={{ bgcolor: 'text.disabled' }}
+                sx={{ bgcolor: "text.disabled" }}
                 className="w-full h-full rounded-full opacity-20"
               />
             ),
@@ -92,6 +95,86 @@ function ProjectDashboardApp(props) {
             className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
             disableRipple
             label="Budget Summary"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
+          />
+          <Tab
+            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+            disableRipple
+            label="Team Members"
           />
           <Tab
             className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
@@ -113,4 +196,4 @@ function ProjectDashboardApp(props) {
   );
 }
 
-export default withReducer('projectDashboardApp', reducer)(ProjectDashboardApp);
+export default withReducer("projectDashboardApp", reducer)(ProjectDashboardApp);

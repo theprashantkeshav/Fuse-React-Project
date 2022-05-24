@@ -4,7 +4,8 @@ import { styled } from "@mui/material/styles";
 import reducer from "../store";
 import OrdersHeader from "./OrdersHeader";
 import OrdersTable from "./OrdersTable";
-import IndividualProtocol from "./IndividualProtocol";
+import ListProtocols from "./ListProtocols";
+import { useState } from "react";
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
   "& .FusePageCarded-header": {
@@ -25,8 +26,14 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
 }));
 
 function Orders() {
+  const [selected, setSelected] = useState();
+  console.log(selected);
   return (
-    <Root header={<OrdersHeader />} content={<OrdersTable />} innerScroll />
+    <>
+      <OrdersHeader />
+      <ListProtocols setSelected={setSelected} />
+      <OrdersTable />
+    </>
   );
 }
 

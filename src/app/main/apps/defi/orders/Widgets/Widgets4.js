@@ -8,7 +8,8 @@ import Select from "@mui/material/Select";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { memo, useState } from "react";
-import ReactApexChart from "react-apexcharts";
+// import ReactApexChart from "react-apexcharts";
+import Chart from "react-apexcharts";
 
 function Widgets4(props) {
   const theme = useTheme();
@@ -24,15 +25,21 @@ function Widgets4(props) {
       </div>
 
       <div className="h-256 relative">
-        <ReactApexChart
+        {/* <ReactApexChart
           options={data.options}
-          series={data.series[serie][0].data}
+          series={data.series}
           type={data.options.chart.type}
           height={data.options.chart.height}
+        /> */}
+        <Chart
+          options={props.options}
+          series={props.series}
+          type="pie"
+          width="380"
         />
       </div>
-
-      {/* <div className="mb-24 flex flex-row items-center justify-center">
+      {/* 
+      <div className="mb-24 flex flex-row items-center justify-center">
         {data.options.labels.map((label, index) => (
           <div key={label} className="px-16 flex flex-col items-center">
             <Typography className="h4 font-semibold" color="textSecondary">

@@ -15,121 +15,142 @@ const Root = styled("div")(({ theme }) => ({
   color: theme.palette.primary.contrastText,
 }));
 
-// const tabs = [
-//   { title: "1M", day: 30, interval: "daily" },
-//   { title: "1Y", day: 365, interval: "daily" },
-//   { title: "ALL", day: 5 * 365, interval: "daily" },
-// ];
+const widgets5 = {
+  id: "widget0",
+  series: {
+    "1M": [
+      {
+        name: "TVL",
+        data: [1.9, 3, 3.4, 2.2, 2.9, 3.9, 2.5, 3.8, 4.1, 3.8, 3.2, 2.9],
+        fill: "start",
+      },
+    ],
+    "1Y": [
+      {
+        name: "TVL",
+        data: [2.2, 2.9, 3.9, 2.5, 3.8, 3.2, 2.9, 1.9, 3, 3.4, 4.1, 3.8],
+        fill: "start",
+      },
+    ],
+    ALL: [
+      {
+        name: "TVL",
+        data: [],
+        fill: "start",
+      },
+    ],
+  },
+  options: {
+    chart: {
+      id: "area-datetime",
+      type: "area",
+      height: "100%",
+      background: "transparent",
+      toolbar: {
+        show: true,
+      },
+      zoom: {
+        enabled: true,
+      },
+    },
+    theme: {
+      mode: "dark",
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    xaxis: {
+      type: "datetime",
+      tooltip: {
+        enabled: false,
+      },
+      axisBorder: {
+        show: false,
+      },
+    },
+    tooltip: {
+      x: {
+        format: "dd MMM yyyy",
+      },
+    },
+    yaxis: {
+      axisBorder: {
+        show: false,
+      },
 
-// let options = {
-//   chart: {
-//     type: "area",
-//     height: "100%",
-//     background: "transparent",
-//     toolbar: {
-//       show: true,
-//     },
-//     zoom: {
-//       enabled: true,
-//     },
-//   },
-//   theme: {
-//     mode: "dark",
-//   },
-//   dataLabels: {
-//     enabled: false,
-//   },
-//   xaxis: {
-//     type: "datetime",
-//     tooltip: {
-//       enabled: false,
-//     },
-//     axisBorder: {
-//       show: false,
-//     },
-//   },
-//   tooltip: {
-//     x: {
-//       format: "dd MMM yyyy",
-//     },
-//   },
-//   yaxis: {
-//     axisBorder: {
-//       show: false,
-//     },
+      decimalsInFloat: 2,
+      labels: {
+        show: true,
+        align: "right",
+        minWidth: 0,
+        maxWidth: 160,
+        style: {
+          colors: [],
+          fontSize: "12px",
+          fontFamily: "Helvetica, Arial, sans-serif",
+          fontWeight: 400,
+          cssClass: "apexcharts-yaxis-label",
+        },
+        offsetX: 0,
+        offsetY: 0,
+        rotate: 0,
+        formatter: (value) => {
+          return value > 1000000
+            ? formatter.format(value)
+            : (Math.round(value * 100) / 100).toLocaleString();
+        },
+      },
+    },
+    fill: {
+      type: "solid",
+      opacity: 0.7,
+      gradient: {
+        shadeIntensity: 0.4,
+        opacityFrom: 1,
+        opacityTo: 0.5,
+        stops: [30, 100, 100],
+      },
+    },
+    grid: {
+      show: true,
+      strokeDashArray: 3,
+      position: "back",
+      xaxis: {
+        lines: {
+          show: true,
+        },
+      },
+      yaxis: {
+        lines: {
+          show: true,
+        },
+      },
+      padding: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+      },
+    },
+    stroke: {
+      show: true,
+      curve: "smooth",
+      lineCap: "butt",
+      width: 1.5,
+      dashArray: 0,
+    },
+  },
+};
 
-//     decimalsInFloat: 2,
-//     labels: {
-//       show: true,
-//       align: "right",
-//       minWidth: 0,
-//       maxWidth: 160,
-//       style: {
-//         colors: [],
-//         fontSize: "12px",
-//         fontFamily: "Helvetica, Arial, sans-serif",
-//         fontWeight: 400,
-//         cssClass: "apexcharts-yaxis-label",
-//       },
-//       offsetX: 0,
-//       offsetY: 0,
-//       rotate: 0,
-//       formatter: (value) => {
-//         return value > 1000000
-//           ? formatter.format(value)
-//           : (Math.round(value * 100) / 100).toLocaleString();
-//       },
-//     },
-//   },
-//   fill: {
-//     type: "solid",
-//     opacity: 0.7,
-//     gradient: {
-//       shadeIntensity: 0.4,
-//       opacityFrom: 1,
-//       opacityTo: 0.5,
-//       stops: [30, 100, 100],
-//     },
-//   },
-//   grid: {
-//     show: true,
-//     strokeDashArray: 3,
-//     position: "back",
-//     xaxis: {
-//       lines: {
-//         show: true,
-//       },
-//     },
-//     yaxis: {
-//       lines: {
-//         show: true,
-//       },
-//     },
-//     padding: {
-//       top: 0,
-//       right: 0,
-//       bottom: 0,
-//       left: 0,
-//     },
-//   },
-//   stroke: {
-//     show: true,
-//     curve: "smooth",
-//     lineCap: "butt",
-//     width: 1.5,
-//     dashArray: 0,
-//   },
-// };
-
-function Widgets1(props) {
+function Widgets5(props) {
   const theme = useTheme();
   const contrastTheme = useSelector(
     selectContrastMainTheme(theme.palette.primary.main)
   );
-  const data = _.merge({}, props.data);
+  const data = _.merge({}, widgets5);
 
   const [tabValue, setTabValue] = useState(2);
-  const series = props.data.series[Object.keys(data.series)[tabValue]];
+  const series = widgets5.series[Object.keys(data.series)[tabValue]];
 
   _.setWith(data, "options.fill.colors", [theme.palette.secondary.main]);
   _.setWith(data, "options.markers.colors", [theme.palette.secondary.main]);
@@ -152,7 +173,7 @@ function Widgets1(props) {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="flex flex-col items-center sm:items-start mb-16 sm:mb-0">
               <Typography className="h2 font-semibold" color="textPrimary">
-                {props.name}
+                Total TVL
               </Typography>
               <Typography className="h5 font-medium" color="textSecondary">
                 TVL
@@ -181,7 +202,7 @@ function Widgets1(props) {
                 ),
               }}
             >
-              {Object.keys(data.series).map((key) => (
+              {Object.keys(widgets5.series).map((key) => (
                 <Tab
                   key={key}
                   className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 capitalize"
@@ -194,10 +215,10 @@ function Widgets1(props) {
         </div>
         <div className="container relative h-200 sm:h-256 pb-16">
           <ReactApexChart
-            options={data.options}
+            options={widgets5.options}
             series={series}
-            type={data.options.chart.type}
-            height={data.options.chart.height}
+            type={widgets5.options.chart.type}
+            height={widgets5.options.chart.height}
           />
         </div>
       </Root>
@@ -205,4 +226,4 @@ function Widgets1(props) {
   );
 }
 
-export default memo(Widgets1);
+export default memo(Widgets5);

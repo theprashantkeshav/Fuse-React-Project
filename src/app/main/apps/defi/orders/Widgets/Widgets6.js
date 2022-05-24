@@ -18,7 +18,7 @@ function protocolTvl(labelValue) {
     : Math.abs(Number(labelValue));
 }
 
-function Widgets2(props) {
+function Widgets6(props) {
   const theme = useTheme();
   // const data = _.merge({}, widgets2);
 
@@ -29,26 +29,27 @@ function Widgets2(props) {
 
   // _.setWith(data, "options.colors", [theme.palette.primary.main]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { data: response } = await axios.get(
-          `https://api.llama.fi/tvl/${props.protocol}`
-        );
-        setTvlData(response);
-      } catch (error) {
-        console.error(error.message);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       setLoading(true);
+  //       try {
+  //         const { data: response } = await axios.get(
+  //           `https://api.llama.fi/tvl/${props.protocol}`
+  //         );
+  //         setTvlData(response);
+  //       } catch (error) {
+  //         console.error(error.message);
+  //       }
+  //       setLoading(false);
+  //     };
+  //     fetchData();
+  //   }, []);
 
-  const widgets2 = {
+  const widgets6 = {
     id: "widget2",
     conversion: {
-      value: protocolTvl(tvlData),
+      //   value: protocolTvl(tvlData),
+      value: 147,
       ofTarget: 13,
     },
     series: [
@@ -100,20 +101,20 @@ function Widgets2(props) {
 
         <div className="flex flex-row flex-wrap items-center mt-12">
           <Typography className="text-48 font-semibold leading-none tracking-tighter">
-            ${widgets2.conversion.value}
+            ${widgets6.conversion.value}
           </Typography>
         </div>
       </div>
       <div className="h-96 w-100-p">
         <ReactApexChart
-          options={widgets2.options}
-          series={widgets2.series}
-          type={widgets2.options.chart.type}
-          height={widgets2.options.chart.height}
+          options={widgets6.options}
+          series={widgets6.series}
+          type={widgets6.options.chart.type}
+          height={widgets6.options.chart.height}
         />
       </div>
     </Card>
   );
 }
 
-export default Widgets2;
+export default Widgets6;

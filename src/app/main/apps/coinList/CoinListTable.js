@@ -1,7 +1,6 @@
+/* eslint-disable prettier/prettier */
 import FuseScrollbars from "@fuse/core/FuseScrollbars";
-import FuseUtils from "@fuse/utils";
 import _ from "@lodash";
-import Checkbox from "@mui/material/Checkbox";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,18 +10,24 @@ import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
-import OrdersStatus from "../order/OrdersStatus";
-import { selectOrders, getOrders } from "../store/ordersSlice";
-import OrdersTableHead from "./OrdersTableHead";
 import { Grid } from "@mui/material";
+import { selectCoins, getCoins } from "./store/coinsSlice";
+import CoinListTableHead from "./CoinListTableHead";
+import { getCoinsList, selectCoinsList } from "./store/coinsListSlice";
 
-function OrdersTable(props) {
+function CoinListTable(props) {
   const dispatch = useDispatch();
-  const orders = useSelector(selectOrders);
+  const orders = useSelector(selectCoins);
+  const coinsList = useSelector(selectCoinsList);
+
   const searchText = useSelector(
-    ({ eCommerceApp }) => eCommerceApp.orders.searchText
+    ({ coinList }) => coinList.coinsList.searchText
+  );
+  const { filterCoinList, search } = useSelector(
+    ({ coinList }) => coinList.coinsList
   );
 
   const [loading, setLoading] = useState(true);
@@ -32,47 +37,39 @@ function OrdersTable(props) {
   const [rowsPerPage, setRowsPerPage] = useState(100);
   const [order, setOrder] = useState({
     direction: "asc",
-    rank: null,
+    id: null,
   });
 
-  // console.log(data[0]);
-
-  // data.map((da) => {
-  //   console.log(da.name);
-  // });
-
   useEffect(() => {
-    dispatch(getOrders()).then((res) => {
-      setLoading(false);
+    dispatch(getCoinsList()).then(() => {
+      dispatch(getCoins(page)).then(() => setLoading(false));
     });
-  }, [dispatch]);
+  }, [dispatch, page]);
 
   useEffect(() => {
-    if (searchText.length !== 0) {
-      setData(FuseUtils.filterArrayByString(orders, searchText));
-      setPage(0);
-    } else {
-      setData(orders);
-    }
+    setData(orders);
   }, [orders, searchText]);
-
+  useEffect(() => {
+    setPage(0);
+  }, [search]);
   function handleRequestSort(event, property) {
-    const rank = property;
+    console.log("property=", property);
+    const id = property;
     let direction = "desc";
 
-    if (order.rank === property && order.direction === "desc") {
+    if (order.id === property && order.direction === "desc") {
       direction = "asc";
     }
 
     setOrder({
       direction,
-      rank,
+      id,
     });
   }
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(data.map((n) => n.rank));
+      setSelected(data.map((n) => n.id));
       return;
     }
     setSelected([]);
@@ -83,19 +80,15 @@ function OrdersTable(props) {
   }
 
   function handleClick(item) {
-    // props.navigate(`/assets/price/${item.gecko_id}`);
-    props.navigate(
-      `/defi/protocols/${item.name.replace(/\s/g, "-").toLowerCase()}`
-    );
-    // console.log(item.name.replace(/\s/g, "-").toLowerCase());
+    props.navigate(`/assets/price/${item.id}`);
   }
 
-  function handleCheck(event, rank) {
-    const selectedIndex = selected.indexOf(rank);
+  function handleCheck(event, id) {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, rank);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -130,7 +123,7 @@ function OrdersTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="textSecondary" variant="h5">
-          There are no orders!
+          We couldnt find that asset :(
         </Typography>
       </motion.div>
     );
@@ -140,7 +133,7 @@ function OrdersTable(props) {
     <div className="w-full flex flex-col">
       <FuseScrollbars className="flex-grow">
         <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
-          <OrdersTableHead
+          <CoinListTableHead
             selectedOrderIds={selected}
             order={order}
             onSelectAllClick={handleSelectAllClick}
@@ -153,31 +146,45 @@ function OrdersTable(props) {
               data,
               [
                 (o) => {
-                  switch (order.rank) {
-                    case "rank": {
-                      return parseInt(o.rank, 100);
+                  switch (order.id) {
+                    case "id": {
+                      return o.market_cap_rank;
                     }
-                    case "category": {
-                      return o.name;
+                    case "coin_name": {
+                      return o.name.toUpperCase();
                     }
-                    case "change24h": {
-                      return o.market_cap_change_24h;
+                    case "symbol": {
+                      return o.symbol;
                     }
-                    case "marketcap": {
+                    case "price": {
+                      return o.current_price;
+                    }
+                    case "1h": {
+                      return o.price_change_percentage_1h_in_currency;
+                    }
+                    case "24h": {
+                      return o.price_change_percentage_24h_in_currency;
+                    }
+                    case "7d": {
+                      return o.price_change_percentage_7d_in_currency;
+                    }
+                    case "24volume": {
+                      return o.total_volume;
+                    }
+                    case "mkt": {
                       return o.market_cap;
                     }
                     default: {
-                      return o[order.rank];
+                      return o[order.id];
                     }
                   }
                 },
               ],
               [order.direction]
             )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((n) => {
-                const isSelected = selected.indexOf(n.rank) !== -1;
-                console.log(n);
+              .slice(0, search ? 50 : rowsPerPage)
+              .map((n, index) => {
+                const isSelected = selected.indexOf(n.id) !== -1;
                 return (
                   <TableRow
                     className="h-72 cursor-pointer"
@@ -185,30 +192,26 @@ function OrdersTable(props) {
                     role="checkbox"
                     aria-checked={isSelected}
                     tabIndex={-1}
-                    key={n.rank}
+                    key={n.id}
                     selected={isSelected}
                     onClick={(event) => handleClick(n)}
                   >
                     <TableCell
                       className="w-40 md:w-64 text-center"
                       padding="none"
-                      align="left"
                     ></TableCell>
-
                     <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="left"
+                      className="w-40 md:w-64 text-center"
+                      padding="none"
                     >
-                      {n.rank}
+                      {n.market_cap_rank}
                     </TableCell>
 
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
-                      align="left"
+                      align="right"
                     >
                       <Grid container>
                         <span>
@@ -216,12 +219,12 @@ function OrdersTable(props) {
                             loading="lazy"
                             width="18"
                             height="18"
-                            src={n.logo}
+                            src={n.image}
                             alt={n.name}
                           />
                         </span>
                         <Typography style={{ marginLeft: 2 }}>
-                          {n.name} ({n.symbol})
+                          {n.name}
                         </Typography>
                       </Grid>
                     </TableCell>
@@ -230,29 +233,84 @@ function OrdersTable(props) {
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
-                      align="left"
+                      align="right"
                     >
-                      {/* <span>$</span>{n.floorPriceUSD.toLocaleString()} */}
-                      {n.chain}
+                      {n.symbol.toUpperCase()}
                     </TableCell>
 
                     <TableCell
-                      className="p-4 md:p-16"
+                      className="p-4 md:p-16 truncate"
                       component="th"
                       scope="row"
-                      align="left"
-                    >
-                      {n.category}
-                    </TableCell>
-
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="left"
+                      align="right"
                     >
                       <span>$</span>
-                      {n.tvl.toLocaleString()}
+                      {n.current_price?.toLocaleString()}
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                      align="right"
+                      style={{
+                        color:
+                          n.price_change_percentage_1h_in_currency > 0
+                            ? "green"
+                            : "red",
+                      }}
+                    >
+                      {Math.round(
+                        n.price_change_percentage_1h_in_currency * 10
+                      ) / 10}
+                      %
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      align="right"
+                      scope="row"
+                      style={{
+                        color:
+                          n.price_change_percentage_24h_in_currency > 0
+                            ? "green"
+                            : "red",
+                      }}
+                    >
+                      {Math.round(
+                        n.price_change_percentage_24h_in_currency * 10
+                      ) / 10}
+                      %
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                      align="right"
+                      style={{
+                        color:
+                          n.price_change_percentage_7d_in_currency > 0
+                            ? "green"
+                            : "red",
+                      }}
+                    >
+                      {/* <OrdersStatus name={n.status[0].name} /> */}
+                      {Math.round(
+                        n.price_change_percentage_7d_in_currency * 10
+                      ) / 10}
+                      %
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                      align="right"
+                    >
+                      <span>$</span>
+                      {n.total_volume?.toLocaleString()}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -260,47 +318,23 @@ function OrdersTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.change_1h < 0 ? (
-                        <span className="text-red-600">
-                          %{parseFloat(n.change_1h).toFixed(2)}
-                        </span>
-                      ) : (
-                        <span className="text-green-600">
-                          %{parseFloat(n.change_1h).toFixed(2)}
-                        </span>
-                      )}
+                      <span>$</span>
+                      {n.market_cap?.toLocaleString()}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
                       component="th"
                       scope="row"
-                      align="right"
                     >
-                      {n.change_1d < 0 ? (
-                        <span className="text-red-600">
-                          %{parseFloat(n.change_1d).toFixed(2)}
-                        </span>
-                      ) : (
-                        <span className="text-green-600">
-                          %{parseFloat(n.change_1d).toFixed(2)}
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                      align="right"
-                    >
-                      {n.change_7d < 0 ? (
-                        <span className="text-red-600">
-                          %{parseFloat(n.change_7d).toFixed(2)}
-                        </span>
-                      ) : (
-                        <span className="text-green-600">
-                          %{parseFloat(n.change_7d).toFixed(2)}
-                        </span>
-                      )}
+                      <img
+                        loading="lazy"
+                        width="135"
+                        height="50"
+                        alt={`${n.name} 7d chart`}
+                        src={`https://www.coingecko.com/coins/${
+                          n.image.split("/")[5]
+                        }/sparkline`}
+                      />
                     </TableCell>
                   </TableRow>
                 );
@@ -312,8 +346,11 @@ function OrdersTable(props) {
       <TablePagination
         className="shrink-0 border-t-1"
         component="div"
-        count={data.length}
-        rowsPerPage={rowsPerPage}
+        count={
+          filterCoinList.length > 0 ? filterCoinList.length : coinsList.length
+        }
+        rowsPerPage={search ? 50 : rowsPerPage}
+        // labelRowsPerPage={<Typography>Assets per page</Typography>}
         page={page}
         backIconButtonProps={{
           "aria-label": "Previous Page",
@@ -328,4 +365,4 @@ function OrdersTable(props) {
   );
 }
 
-export default withRouter(OrdersTable);
+export default withRouter(CoinListTable);
