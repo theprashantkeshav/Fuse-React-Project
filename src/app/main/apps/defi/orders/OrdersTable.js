@@ -177,7 +177,6 @@ function OrdersTable(props) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = selected.indexOf(n.rank) !== -1;
-                console.log(n);
                 return (
                   <TableRow
                     className="h-72 cursor-pointer"

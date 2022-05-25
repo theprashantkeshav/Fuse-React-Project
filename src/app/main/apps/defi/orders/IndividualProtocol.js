@@ -31,6 +31,7 @@ const IndividualProtocol = () => {
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [chartData, setChartData] = useState([]);
 
   // console.log(data.currentChainTvls.Avalanche);
 

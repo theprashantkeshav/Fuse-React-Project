@@ -27,11 +27,11 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
 
 function Orders() {
   const [selected, setSelected] = useState();
-  console.log(selected);
+
   return (
     <>
       <OrdersHeader />
-      <ListProtocols setSelected={setSelected} />
+      <ListProtocols setSelected={setSelected} selected={selected} />
       <OrdersTable />
     </>
   );
