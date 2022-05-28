@@ -4,6 +4,9 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import Typography from "@mui/material/Typography";
 import FuseLoading from "@fuse/core/FuseLoading";
+import { useDispatch, useSelector } from "react-redux";
+// import { getIndividualProtocol } from "../store/individualProtocolSlice";
+// import { selectOrders, getOrders } from "../store/ordersSlice";
 import Widgets1 from "./Widgets/Widgets1";
 import Widgets2 from "./Widgets/Widgets2";
 import Widgets3 from "./Widgets/Widgets3";
@@ -12,6 +15,17 @@ import Widgets4 from "./Widgets/Widgets4";
 const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
 const IndividualProtocol = () => {
+  // const dispatch = useDispatch();
+  const { protocol } = useParams();
+
+  // useEffect(() => {
+  //   dispatch(getIndividualProtocol(protocol));
+  // }, [protocol]);
+
+  // const data = useSelector((state) => state.ip);
+
+  // console.log(data);
+
   const container = {
     show: {
       transition: {
@@ -25,15 +39,33 @@ const IndividualProtocol = () => {
     show: { opacity: 1, y: 0 },
   };
 
-  const { protocol } = useParams();
   // const dispatch = useDispatch();
   // const orders = useSelector(selectOrders);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [chartData, setChartData] = useState([]);
 
-  // console.log(data.currentChainTvls.Avalanche);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        var response = await axios.get(
+          `https://api.llama.fi/protocol/${protocol}`,
+          { redirect: "follow" }
+        );
+
+        if (response.config.url !== response.request.responseURL) {
+          response = await axios.get(response.request.responseURL);
+        }
+
+        setData(response.data);
+      } catch (error) {
+        console.error(error.message);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [protocol]);
 
   var allTvl = data.tvl?.map((t) => {
     return [new Date(t.date * 1000).toLocaleString(), t.totalLiquidityUSD];
@@ -78,22 +110,6 @@ const IndividualProtocol = () => {
   const tvlChainsData = tvlChains?.map((c) => {
     return data.currentChainTvls[c];
   });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { data: response } = await axios.get(
-          `https://api.llama.fi/protocol/${protocol}`
-        );
-        setData(response);
-      } catch (error) {
-        console.error(error.message);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
 
   const widgets1 = {
     id: "widget1",
@@ -222,62 +238,6 @@ const IndividualProtocol = () => {
     },
   };
 
-  const widgets3 = {
-    id: "widget3",
-    description: {
-      value: data.description,
-      ofTarget: 12,
-    },
-    series: [
-      {
-        name: "Discription",
-        data: [],
-      },
-    ],
-    options: {
-      chart: {
-        type: "area",
-        height: "100%",
-        sparkline: {
-          enabled: true,
-        },
-      },
-      xaxis: {
-        categories: [
-          "Jan 1",
-          "Jan 2",
-          "Jan 3",
-          "Jan 4",
-          "Jan 5",
-          "Jan 6",
-          "Jan 7",
-          "Jan 8",
-          "Jan 9",
-          "Jan 10",
-          "Jan 11",
-          "Jan 12",
-          "Jan 13",
-          "Jan 14",
-          "Jan 15",
-        ],
-      },
-      fill: {
-        type: "solid",
-        opacity: 0.7,
-      },
-      tooltip: {
-        followCursor: true,
-        theme: "dark",
-        fixed: {
-          enabled: false,
-          position: "topRight",
-          offsetX: 0,
-          offsetY: 0,
-        },
-      },
-    },
-  };
-
   return (
     <div>
       {loading && <FuseLoading />}
@@ -318,7 +278,7 @@ const IndividualProtocol = () => {
                   </motion.div>
 
                   <motion.div variants={item} className="widget w-full p-16">
-                    <Widgets3 data={widgets3} />
+                    <Widgets3 description={data.description} />
                   </motion.div>
                 </div>
               </div>

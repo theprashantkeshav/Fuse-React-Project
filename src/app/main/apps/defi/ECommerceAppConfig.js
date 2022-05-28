@@ -6,6 +6,7 @@ const Products = lazy(() => import("./products/Products"));
 const Order = lazy(() => import("./order/Order"));
 const Orders = lazy(() => import("./orders/Orders"));
 const IndividualProtocol = lazy(() => import("./orders/IndividualProtocol"));
+const ChainUI = lazy(() => import("./orders/ChainsUI"));
 
 const DeFiAppConfig = {
   settings: {
@@ -28,10 +29,10 @@ const DeFiAppConfig = {
       path: "/defi/protocols/:protocol",
       element: <IndividualProtocol />,
     },
-    // {
-    //   path: "/defi/protocols/widget1",
-    //   element: <IndividualProtocol />,
-    // },
+    {
+      path: "/protocol/:chain",
+      element: <ChainUI />,
+    },
     {
       path: "apps/e-commerce/orders/:orderId",
       element: <Order />,

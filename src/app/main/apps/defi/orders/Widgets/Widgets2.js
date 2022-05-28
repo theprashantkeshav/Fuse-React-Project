@@ -45,54 +45,6 @@ function Widgets2(props) {
     fetchData();
   }, []);
 
-  const widgets2 = {
-    id: "widget2",
-    conversion: {
-      value: protocolTvl(tvlData),
-      ofTarget: 13,
-    },
-    series: [
-      {
-        name: "TVL",
-        data: [],
-      },
-    ],
-    options: {
-      chart: {
-        type: "area",
-        height: "100%",
-        sparkline: {
-          enabled: true,
-        },
-      },
-      fill: {
-        type: "solid",
-        opacity: 0.7,
-      },
-      xaxis: {
-        categories: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ],
-      },
-      tooltip: {
-        followCursor: true,
-        theme: "dark",
-        fixed: {
-          enabled: false,
-          position: "topRight",
-          offsetX: 0,
-          offsetY: 0,
-        },
-      },
-    },
-  };
-
   return (
     <Card className="w-full rounded-30 shadow">
       <div className="p-20 pb-0">
@@ -100,18 +52,11 @@ function Widgets2(props) {
 
         <div className="flex flex-row flex-wrap items-center mt-12">
           <Typography className="text-48 font-semibold leading-none tracking-tighter">
-            ${widgets2.conversion.value}
+            ${protocolTvl(tvlData)}
           </Typography>
         </div>
       </div>
-      <div className="h-96 w-100-p">
-        <ReactApexChart
-          options={widgets2.options}
-          series={widgets2.series}
-          type={widgets2.options.chart.type}
-          height={widgets2.options.chart.height}
-        />
-      </div>
+      <div className="h-96 w-100-p"></div>
     </Card>
   );
 }

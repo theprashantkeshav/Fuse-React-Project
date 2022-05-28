@@ -6,15 +6,16 @@ import Typography from "@mui/material/Typography";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { useDispatch, useSelector } from "react-redux";
 import { selectOrders, getOrders } from "../store/ordersSlice";
-import Widgets5 from "./Widgets/Widgets5";
+
 import Widgets6 from "./Widgets/Widgets6";
 import Widgets7 from "./Widgets/Widgets7";
 import Widgets8 from "./Widgets/Widgets8";
+import Widgets9 from "./Widgets/Widgets9";
 import DropDown from "./Dropdown/DropDown";
 
 const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
-const ListProtocols = () => {
+const IndividualChain = ({ params }) => {
   const dispatch = useDispatch();
   const orders = useSelector(selectOrders);
   const searchText = useSelector(
@@ -34,21 +35,36 @@ const ListProtocols = () => {
     show: { opacity: 1, y: 0 },
   };
 
-  const [loading, setLoading] = useState(true);
   const [allData, setAllData] = useState({
     chainData: null,
     chartData: null,
   });
-  const [listData, setListData] = useState(orders);
-  // console.log(listData);
+  const [chainData, setChainData] = useState(orders);
+  const [loading, setLoading] = useState(true);
 
   // console.log(allData.chartData);
 
+  var IndChainData = chainData?.map((da) => {
+    if (da.chains.includes(params)) {
+      return da;
+    }
+  });
+
+  IndChainData = IndChainData?.filter(function (element) {
+    return element !== undefined;
+  });
+
+  useEffect(() => {
+    dispatch(getOrders()).then((res) => {
+      setLoading(false);
+    });
+  }, [dispatch]);
+
   useEffect(() => {
     if (searchText.length !== 0) {
-      setListData(FuseUtils.filterArrayByString(orders, searchText));
+      setChainData(FuseUtils.filterArrayByString(orders, searchText));
     } else {
-      setListData(orders);
+      setChainData(orders);
     }
   }, [orders, searchText]);
 
@@ -56,10 +72,10 @@ const ListProtocols = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const chains = await axios.get(`https://api.llama.fi/chains`, {
+        var chains = await axios.get(`https://api.llama.fi/chains`, {
           redirect: "follow",
         });
-        const charts = await axios.get(`https://api.llama.fi/charts`, {
+        var charts = await axios.get(`https://api.llama.fi/charts/${params}`, {
           redirect: "follow",
         });
 
@@ -81,29 +97,23 @@ const ListProtocols = () => {
       setLoading(false);
     };
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    dispatch(getOrders()).then((res) => {
-      setLoading(false);
-    });
-  }, [dispatch]);
+  }, [params]);
 
   const chainName = allData.chainData?.map((cd) => {
     return cd.name;
   });
 
-  const allChartData = allData.chartData?.map((cd) => {
+  const individualChainData = allData.chartData?.map((cd) => {
     return [new Date(cd.date * 1000).toLocaleString(), cd.totalLiquidityUSD];
   });
 
-  var TotalTvl = allData.chartData?.map((cd) => {
+  var IndividualTvl = allData.chartData?.map((cd) => {
     return cd.totalLiquidityUSD;
   });
 
-  var currentTotalTvl = TotalTvl?.pop();
+  var currentTotalTvl = IndividualTvl?.pop();
 
-  var lastDayTvl = TotalTvl?.at(-2);
+  var lastDayTvl = IndividualTvl?.at(-2);
 
   var percDiff =
     100 *
@@ -111,18 +121,18 @@ const ListProtocols = () => {
       (currentTotalTvl - lastDayTvl) / ((lastDayTvl + currentTotalTvl) / 2)
     );
 
-  const dominanceName = listData[0]?.name;
-  const dominanceTVL = listData[0]?.tvl;
+  const dominanceName = IndChainData[0]?.name;
+  const dominanceTVL = IndChainData[0]?.tvl;
 
   const dominancePer = (dominanceTVL / currentTotalTvl) * 100;
   console.log(dominancePer);
 
-  const widgets5 = {
-    id: "widget5",
+  const widgets9 = {
+    id: "widget9",
     series: [
       {
         name: "Total TVL",
-        data: allChartData,
+        data: individualChainData,
         fill: "start",
       },
     ],
@@ -234,6 +244,7 @@ const ListProtocols = () => {
 
   return (
     <div>
+      {" "}
       <div className="w-full">
         <div>
           <motion.div
@@ -243,7 +254,7 @@ const ListProtocols = () => {
             animate="show"
           >
             <Typography className="h1 font-semibold" color="textPrimary">
-              TVL Ranking
+              {params}
             </Typography>
           </motion.div>
           <motion.div
@@ -256,7 +267,7 @@ const ListProtocols = () => {
               Monitor metrics, check reports and review performance
             </Typography>
           </motion.div>
-          <Widgets5 data={widgets5} />
+          <Widgets9 data={widgets9} />
           <motion.div
             className="flex flex-col md:flex-row sm:p-8 container"
             variants={container}
@@ -296,4 +307,4 @@ const ListProtocols = () => {
   );
 };
 
-export default ListProtocols;
+export default IndividualChain;

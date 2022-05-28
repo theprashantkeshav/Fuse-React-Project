@@ -16,12 +16,17 @@ const Root = styled("div")(({ theme }) => ({
   color: theme.palette.primary.contrastText,
 }));
 
-function Widgets5(props) {
+function Widgets9(props) {
   const theme = useTheme();
   const contrastTheme = useSelector(
     selectContrastMainTheme(theme.palette.primary.main)
   );
   const data = _.merge({}, props.data);
+
+  const [tabValue, setTabValue] = useState(2);
+  const series = props.data.series[Object.keys(data.series)[tabValue]];
+
+  // console.log(chartData);
 
   _.setWith(data, "options.fill.colors", [theme.palette.secondary.main]);
   _.setWith(data, "options.markers.colors", [theme.palette.secondary.main]);
@@ -65,4 +70,4 @@ function Widgets5(props) {
   );
 }
 
-export default memo(Widgets5);
+export default memo(Widgets9);

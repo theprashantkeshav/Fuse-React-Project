@@ -1,12 +1,12 @@
 import FusePageCarded from "@fuse/core/FusePageCarded";
 import withReducer from "app/store/withReducer";
 import { styled } from "@mui/material/styles";
-import FuseLoading from "@fuse/core/FuseLoading";
 import reducer from "../store";
 import OrdersHeader from "./OrdersHeader";
-import OrdersTable from "./OrdersTable";
-import ListProtocols from "./ListProtocols";
+import ChainOrderTable from "./ChainOrderTable";
+import IndividualChain from "./IndividualChain";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
   "& .FusePageCarded-header": {
@@ -26,14 +26,16 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
   },
 }));
 
-function Orders() {
+function ChainUI() {
+  const { chain } = useParams();
+
   return (
     <>
       <OrdersHeader />
-      <ListProtocols />
-      <OrdersTable />
+      <IndividualChain params={chain} />
+      <ChainOrderTable params={chain} />
     </>
   );
 }
 
-export default withReducer("eCommerceApp", reducer)(Orders);
+export default withReducer("eCommerceApp", reducer)(ChainUI);

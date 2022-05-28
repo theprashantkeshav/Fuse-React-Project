@@ -18,7 +18,7 @@ import { selectOrders, getOrders } from "../store/ordersSlice";
 import OrdersTableHead from "./OrdersTableHead";
 import { Grid } from "@mui/material";
 
-function OrdersTable(props) {
+function ChainOrderTable(props) {
   const dispatch = useDispatch();
   const orders = useSelector(selectOrders);
   const searchText = useSelector(
@@ -35,9 +35,19 @@ function OrdersTable(props) {
     rank: null,
   });
 
+  var chainData = data?.map((da) => {
+    if (da.chains.includes(props.params)) {
+      return da;
+    }
+  });
+
+  chainData = chainData?.filter(function (element) {
+    return element !== undefined;
+  });
+
   useEffect(() => {
     dispatch(getOrders()).then((res) => {
-      props.setLoading(false);
+      setLoading(false);
     });
   }, [dispatch]);
 
@@ -66,7 +76,7 @@ function OrdersTable(props) {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(data.map((n) => n.rank));
+      setSelected(chainData.map((n) => n.rank));
       return;
     }
     setSelected([]);
@@ -114,7 +124,7 @@ function OrdersTable(props) {
   //   return <FuseLoading />;
   // }
 
-  if (data.length === 0) {
+  if (chainData.length === 0) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -137,12 +147,12 @@ function OrdersTable(props) {
             order={order}
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
-            rowCount={data.length}
+            rowCount={chainData.length}
             onMenuItemClick={handleDeselect}
           />
           <TableBody>
             {_.orderBy(
-              data,
+              chainData,
               [
                 (o) => {
                   switch (order.rank) {
@@ -304,7 +314,7 @@ function OrdersTable(props) {
       <TablePagination
         className="shrink-0 border-t-1"
         component="div"
-        count={data.length}
+        count={chainData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         backIconButtonProps={{
@@ -320,4 +330,4 @@ function OrdersTable(props) {
   );
 }
 
-export default withRouter(OrdersTable);
+export default withRouter(ChainOrderTable);
